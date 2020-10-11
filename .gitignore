@@ -1,0 +1,11 @@
+
+/sysroot
+/tools/bin
+/tools/i686-elf
+/tools/include
+/tools/lib
+/tools/libexec
+/tools/share
+
+# ignore object directory
+/**/obj

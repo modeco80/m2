@@ -1,0 +1,10 @@
+#!/bin/bash
+# Builds all the components in order to create a functioning system root
+
+pushd base/libc/kernel
+	make
+popd
+
+pushd base/kernel
+	make
+popd

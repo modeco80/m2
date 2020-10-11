@@ -1,0 +1,24 @@
+# Place.txt
+#
+# This file dictates where in the flat OS system root files will go.
+# System root files are built with one name (WITHOUT SPACES!!!!)
+# and usually are installed into the system root
+# as another file. This filename CAN have spaces.
+#
+# Hopefully this file format is obvious enough?
+
+# System stuff
+kernel /System/kernel.elf
+
+# Development Standard C includes
+stdlib.h /System/Development/include/stdlib.h
+string.h /System/Development/include/string.h
+cdefs.h /System/Development/include/sys/cdefs.h
+
+# Development M2 includes
+
+# Development libraries
+libc.a /System/Development/lib/libc.a
+
+# Push the libk & all kernel development libraries into a /Kernel subdirectory
+libk.a /System/Development/lib/Kernel/libk.a

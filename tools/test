@@ -1,0 +1,6 @@
+#!/bin/bash
+# Simply executes the test target on the kernel
+
+pushd base/kernel
+	make test
+popd
