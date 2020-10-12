@@ -1,14 +1,19 @@
 ; ------------------------------------------------
 ;
-;	Multiboot boot code for OSDEV project
+;	Multiboot boot code for M2 (oops!)
 ;
 ; ------------------------------------------------
 
 MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries
 MEMINFO  equ  1 << 1            ; provide memory map
-FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
+
+
 MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
+FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
 CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
+
+; This is set by a Multiboot1 compliant bootloader in EAX when 
+; the kernel is jumped to
 BOOT_MAGIC equ 0x2BADB002
 
 ; Multiboot header data
@@ -29,7 +34,7 @@ stack_top:
 
 section .text
 
-; Externs from our C code
+; Externs from our C code that we call
 extern Kernel_Entry
 extern DiagCons_Puts
 
@@ -50,14 +55,6 @@ _kstart:
 	jmp .hang_stack_clean
 	
 .compatibility_test_successful:
-
-	; disable cursor ?
-	mov dx, 0x3D4
-	mov al, 0xA
-	out dx,al
-	mov dx, 0x3D4
-	mov al, 0xA
-	out dx,al
 	
 	; We've determined that the kernel was booted with a 
 	; Multiboot-compliant boot loader. That's nice!
@@ -67,8 +64,7 @@ _kstart:
 
 	call Kernel_Entry
 	
-	; I guess this isn't quite *required*, more just 
-	; some good-ol cleaning up before we get to hang, 
+	; I guess this isn't quite *required*, 
 	; but we clean up the stack after the function returns, as
 	; System V/x86 ABI requires the callee to clean up the stack.
 
