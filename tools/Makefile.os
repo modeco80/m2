@@ -3,8 +3,12 @@
 # a OS component
 ##############################################
 
-# vpath fun
+# Set TOP if we need to.
+ifeq ($(TOP),)
 TOP = $(PWD)
+endif
+
+# vpath fun
 VPATH = $(TOP) $(TOP)/$(TARGET_ARCH) ../ ../$(TARGET_ARCH)
 
 # include the sources first
@@ -67,6 +71,8 @@ endif
 $(O)/%.o: $(TARGET_ARCH)/%.asm
 	$(info Assembling $< for $(TARGET_ARCH))
 	@$(ASM) $< -o $@
+
+# TODO: .s that calls AS
 
 # Arch-specific C code
 $(O)/%.o: $(TARGET_ARCH)/%.c
