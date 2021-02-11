@@ -12,8 +12,7 @@ void Kernel_Entry(multiboot_info_t* MultibootImageInformation) {
 	DiagCons_Clear();
 	
 #ifdef _X86
-	// TODO for x86: We need to replace the GDT
-	// that will be "fun"
+	
 
 	// Initalize serial hardware for a earlycon.
 	Kernel_Sys_InitCOM();

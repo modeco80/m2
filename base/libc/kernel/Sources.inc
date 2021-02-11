@@ -13,6 +13,6 @@ X86_SOURCES = \
 
 # Generic sources.
 SOURCES = \
-	../abort.c
+	abort.c
 
 	

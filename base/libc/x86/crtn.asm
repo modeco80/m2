@@ -1,6 +1,4 @@
 ; GCC compiler suport stuff
-; TODO: Move to libc
-
 
 section .init
 	pop ebp

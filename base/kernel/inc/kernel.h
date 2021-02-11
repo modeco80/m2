@@ -32,7 +32,6 @@ typedef struct {
 
 // System-independent kernel routines go here..
 
-__attribute__((noreturn))
-void Kernel_Panic(char* reason);
+__attribute__((noreturn)) void Kernel_Panic(char* reason);
 
 #endif

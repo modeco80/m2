@@ -1,8 +1,8 @@
 ; ------------------------------------------------
-;
-;	Multiboot boot code for M2 (oops!)
-;
+;	Multiboot boot code for M2
 ; ------------------------------------------------
+
+; Subset of Multiboot1 stuff we use
 
 MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries
 MEMINFO  equ  1 << 1            ; provide memory map
@@ -12,18 +12,18 @@ MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
 FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
 CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
 
-; This is set by a Multiboot1 compliant bootloader in EAX when 
-; the kernel is jumped to
+; This is moved in by a Multiboot1 compliant bootloader to the EAX register when 
+; the kernel is initally jumped to
 BOOT_MAGIC equ 0x2BADB002
 
-; Multiboot header data
+; Define the Multiboot1 header here.
 section .multiboot
 align 4
 	dd MAGIC
 	dd FLAGS
 	dd CHECKSUM
 
-; Stack
+; Provide a elementary stack for the kernel to use.
 STACK_SIZE equ 16 * 1024
 
 section .bss
@@ -34,7 +34,7 @@ stack_top:
 
 section .text
 
-; Externs from our C code that we call
+; Externs from the c/c++ code we call
 extern Kernel_Entry
 extern DiagCons_Puts
 
@@ -52,14 +52,12 @@ _kstart:
 	; but before so, display a string detailing why we decided to do so.
 	push Error_Not_MultiBoot
 	call DiagCons_Puts
-	jmp .hang_stack_clean
+	jmp ._stack_clean
 	
 .compatibility_test_successful:
 	
-	; We've determined that the kernel was booted with a 
-	; Multiboot-compliant boot loader. That's nice!
-	; EBX contains a pointer to the Multiboot information structure.
-	; Push it as the one and sole argument to the kernel entry point.
+	; EBX contains a pointer to the Multiboot information structure that the boot loader
+	; is supposed to initalize. Push it as the one and sole argument to the kernel entry point
 	push ebx
 
 	call Kernel_Entry
@@ -68,7 +66,7 @@ _kstart:
 	; but we clean up the stack after the function returns, as
 	; System V/x86 ABI requires the callee to clean up the stack.
 
-.hang_stack_clean:
+._stack_clean:
 	add esp, 4
 	
 .hang:

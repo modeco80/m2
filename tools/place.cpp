@@ -9,6 +9,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+// A place entry.
 struct PlaceEntry {
 	std::string baseName;
 	std::string outName;

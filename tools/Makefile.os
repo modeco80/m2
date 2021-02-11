@@ -1,40 +1,32 @@
-# generic makefile for building OS components
+#############################################
+# Standardized build system for making
+# a OS component
+##############################################
 
-# We deeply assume x86 in pretty much all cases
-# however this makefile is designed to (maybe) allow multiple architechures?
-TARGET_ARCH = x86
+# vpath fun
+TOP = $(PWD)
+VPATH = $(TOP) $(TOP)/$(TARGET_ARCH) ../ ../$(TARGET_ARCH)
 
-ifeq ($(TARGET_ARCH), x86)
-TC = i686-elf
-ASM = nasm -f elf32
+# include the sources first
+include ./Sources.inc
+
+# Include the specific defs file
+ifeq ($(OS_ARCH),)
+include $(ToolsDir)/Defs.$(OS_ARCH)
+else
+# assume x86
+include $(ToolsDir)/Defs.x86
 endif
 
-CC = $(TC)-gcc
-LD = $(TC)-gcc
-AR = $(TC)-ar
-O = obj/$(TARGET_ARCH)
-
-include ./Sources.inc
 ifeq ($(BUILD_COMP), freestanding)
-CCFLAGS = -ffreestanding -D_X86 $(ADDL_CCFLAGS)
+CCFLAGS = -ffreestanding $(TARGET_DEFINES) $(ADDL_CCFLAGS)
 else
-CCFLAGS = $(ADDL_CCFLAGS)
+CCFLAGS = $(ADDL_CCFLAGS) $(TARGET_DEFINES)
 endif
 
 
 CORRECTED_SOURCES = $(shell echo $(SOURCES) | sed 's/\.\.\///g')
 
-ifeq ($(TARGET_ARCH), x86)
-
-CORRECTED_X86_SOURCES = $(X86_SOURCES:../=)
-
-X86_ASM_SOURCES = $(CORRECTED_X86_SOURCES:%.c=)
-X86_C_SOURCES = $(CORRECTED_X86_SOURCES:%.asm=)
-
-OBJS=$(CORRECTED_SOURCES:%.c=$(O)/%.o) $(X86_ASM_SOURCES:%.asm=$(O)/%.o) $(X86_C_SOURCES:%.c=$(O)/%.o)
-else
-OBJS=$(CORRECTED_SOURCES:%.c=$(O)/%.o)
-endif
 
 # Tell make that the virtual targets we have
 # are in fact not dependent on files.
@@ -45,6 +37,7 @@ all: build post
 $(O):
 	@mkdir -p $@
 
+# TODO: We need A crt executable
 ifeq ($(BUILD_TARGET), executable)
 
 build: $(O)/$(TARGET_NAME)
@@ -66,7 +59,7 @@ $(O)/lib$(TARGET_NAME).a: $(O) $(OBJS)
 	$(info Creating library $@ for $(TARGET_ARCH))
 	@$(AR) r $@ $(OBJS)
 else
-$(error Invalid BUILD_TARGET $(BUILD_TARGET))
+$(error Invalid build target $(BUILD_TARGET) - it can be any one of the following: executable, staticlib)
 endif
 
 endif
@@ -79,23 +72,8 @@ $(O)/%.o: $(TARGET_ARCH)/%.asm
 $(O)/%.o: $(TARGET_ARCH)/%.c
 	$(info Compiling C source $< for $(TARGET_ARCH))
 	@$(CC) -c $< $(CCFLAGS) -o $@
-	
+
 $(O)/%.o: %.c
-	$(info Compiling C source $< for $(TARGET_ARCH))
-	@$(CC) -c $< $(CCFLAGS) -o $@
-
-# a very very bad	
-# hack for libk & other "multiple-target" things
-
-$(O)/%.o: ../$(TARGET_ARCH)/%.asm
-	$(info Assembling $< for $(TARGET_ARCH))
-	@$(ASM) $< -o $@
-
-$(O)/%.o: ../$(TARGET_ARCH)/%.c
-	$(info Compiling C source $< for $(TARGET_ARCH))
-	@$(CC) -c $< $(CCFLAGS) -o $@
-
-$(O)/%.o: ../%.c
 	$(info Compiling C source $< for $(TARGET_ARCH))
 	@$(CC) -c $< $(CCFLAGS) -o $@
 

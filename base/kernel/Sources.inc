@@ -4,7 +4,7 @@ TARGET_NAME=kernel
 BUILD_TARGET=executable
 BUILD_COMP=freestanding
 
-ADDL_CCFLAGS = -O2 -std=gnu99 -Wall -Wextra -I../libc/include
+ADDL_CCFLAGS = -O2 -std=gnu99 -Wall -Wextra -I../libc/include -I$(TOP)/inc -I$(TOP)/inc/$(TARGET_ARCH)
 LDFLAGS = -T $(TARGET_ARCH)/kernel.ld -L../libc/kernel/obj/$(TARGET_ARCH) -lk  -ffreestanding -nostdlib -lgcc 
 
 # Given here are X86 sources.

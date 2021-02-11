@@ -3,7 +3,7 @@
 # This file dictates where in the flat OS system root files will go.
 # System root files are built with one name (WITHOUT SPACES!!!!)
 # and usually are installed into the system root
-# as another file. This filename CAN have spaces.
+# as another file. This filename CAN have whatever characters or space rules are needed.
 #
 # Hopefully this file format is obvious enough?
 

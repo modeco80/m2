@@ -9,6 +9,9 @@ export DAZZLE_INIT="y";
 export ToolsDir="$PWD/tools"
 export PATH="${ToolsDir}/bin:${PATH}";
 
+# Set the OS arch.
+export OS_ARCH="x86"
+
 export DAZZLE_SYSROOT="$PWD/sysroot";
 
 if [ ! -d "$DAZZLE_SYSROOT" ]; then

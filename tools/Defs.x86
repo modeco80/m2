@@ -1,0 +1,31 @@
+# x86 target definitions
+
+TARGET_ARCH=x86
+# "tell me what you are" defines
+TARGET_DEFINES = -D_X86
+TC = i686-elf
+
+ASM = nasm -f elf32
+CC = $(TC)-gcc
+CXX = $(TC)-g++
+LD = $(TC)-gcc
+AR = $(TC)-ar
+
+# object directory
+O = obj/$(TARGET_ARCH)
+
+CORRECTED_X86_SOURCES = $(X86_SOURCES:../=)
+
+X86_ASM_SOURCES = $(CORRECTED_X86_SOURCES:%.c=)
+X86_C_SOURCES = $(CORRECTED_X86_SOURCES:%.asm=)
+
+OBJS=$(CORRECTED_SOURCES:%.c=$(O)/%.o) $(X86_ASM_SOURCES:%.asm=$(O)/%.o) $(X86_C_SOURCES:%.c=$(O)/%.o)
+
+
+# todo: add this to defs.x86 & other defs.files
+#ifeq ($(TARGET_ARCH), x86)
+#else
+
+# platform specific behaviour
+#OBJS=$(CORRECTED_SOURCES:%.c=$(O)/%.o)
+#endif
